@@ -54,12 +54,12 @@ public class ConcurrentGameStore {
         }
     }
 
-    public void removePlayerFromGame(String gameId, Player player){
+    public void removePlayerFromGame(String gameId, String playerId){
         lock.lock();
         try {
             Game game = games.get(gameId);
             if(game != null){
-                game.removePlayer(player);
+                game.removePlayer(playerId);
             }
         } finally {
             lock.unlock();

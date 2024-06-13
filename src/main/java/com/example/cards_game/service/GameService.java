@@ -32,8 +32,8 @@ public class GameService {
         gameStore.addPlayerToGame(gameId, player);
     }
 
-    public void removePlayerFromGame(String gameId, Player player) {
-        gameStore.removePlayerFromGame(gameId, player);
+    public void removePlayerFromGame(String gameId, String playerId) {
+        gameStore.removePlayerFromGame(gameId, playerId);
     }
 
     public void addDeckToGame(String gameId, Deck deck) {
