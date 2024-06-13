@@ -20,7 +20,7 @@ public class Deck {
         Collections.shuffle(cards);
     }
 
-    public Card deadCard(){
+    public Card dealCard(){
         if(cards.isEmpty()){
             return null;
         }
@@ -31,7 +31,11 @@ public class Deck {
         return cards.size();
     }
 
-    public void addCard(Card card){
-        cards.add(card);
+    public List<Card> getCards(){
+        return cards;
+    }
+
+    public String toString() {
+        return "Deck{" + cards + '}';
     }
 }
