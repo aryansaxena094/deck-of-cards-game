@@ -66,7 +66,7 @@ public class ConcurrentGameStore {
         }
     }
 
-    public void addDeckToGrame(String gameId, Deck deck){
+    public void addDeckToGame(String gameId, Deck deck){
         lock.lock();
         try {
             Game game = games.get(gameId);
