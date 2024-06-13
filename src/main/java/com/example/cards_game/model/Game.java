@@ -28,8 +28,8 @@ public class Game {
         players.put(player.getId(), player);
     }
 
-    public void removePlayer(String playerId){
-        players.remove(playerId);
+    public void removePlayer(Player player){
+        players.remove(player.getId(), player);
     }
 
     public void addDeck(Deck deck){
