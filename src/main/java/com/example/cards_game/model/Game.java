@@ -21,7 +21,9 @@ public class Game {
     }
 
     public List<Player> getPlayers(){
-        return new ArrayList<>(players.values());
+        ArrayList<Player> playerList = new ArrayList<>(players.values());
+        playerList.sort((p1, p2) -> p2.getHandValue() - p1.getHandValue());
+        return playerList;
     }
 
     public void addPlayer(Player player){
@@ -30,6 +32,10 @@ public class Game {
 
     public void removePlayer(String playerId){
         players.remove(playerId);
+    }
+
+    public Player getPlayer(String playerId){
+        return players.get(playerId);
     }
 
     public void addDeck(Deck deck){

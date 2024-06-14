@@ -1,5 +1,6 @@
 package com.example.cards_game.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cards_game.model.Card;
-import com.example.cards_game.model.Deck;
 import com.example.cards_game.model.Game;
 import com.example.cards_game.model.Player;
 import com.example.cards_game.service.GameService;
@@ -58,7 +59,7 @@ public class GameController {
         return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{gameId}/player")
+    @PostMapping("/{gameId}/addplayer")
     public ResponseEntity<Void> addPlayerToGame(@PathVariable String gameId, @RequestBody Player player) {
         gameService.addPlayerToGame(gameId, player);
         logger.info("Player added to game with id: {} player id: {}", gameId, player.getId());
@@ -73,15 +74,40 @@ public class GameController {
     }
 
     @PostMapping("/{gameId}/deal")
-    public ResponseEntity<Void> dealCards(@PathVariable String gameId) {
-        Card card = gameService.dealCard(gameId);
-        if (card != null) {
-            logger.info("Card dealt from game with id: {}", gameId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            logger.info("No cards left in game with id: {}", gameId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<String> dealCardsEvenly(@PathVariable String gameId) {
+        String responseMessage = gameService.dealCardsEvenly(gameId);
+        if (responseMessage.contains("No players")) {
+            return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
+    @PostMapping("/{gameId}/deal/{playerId}")
+    public ResponseEntity<String> dealCardsToPlayer(@PathVariable String gameId, @PathVariable String playerId, @RequestParam int numberOfCards) {
+        String responseMessage = gameService.dealCardsToPlayer(gameId, playerId, numberOfCards);
+        if (responseMessage.contains("Player not found") || responseMessage.contains("Game not found")) {
+            return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);   
+        }
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    }
+
+    @GetMapping("/{gameId}/player/{playerId}/cards")
+    public ResponseEntity<List<Card>> getCardsOfPlayer(@PathVariable String gameId, @PathVariable String playerId) {
+        List<Card> cards = gameService.getCardsOfPlayer(gameId, playerId);
+        if (cards == null) {
+            return new ResponseEntity<>(cards, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(cards, HttpStatus.OK);
+    }
+
+    @GetMapping("/{gameId}/players")
+    public ResponseEntity<List<Player>> getPlayers(@PathVariable String gameId) {
+        List<Player> players = gameService.getGame(gameId).getPlayers();
+        return new ResponseEntity<>(players, HttpStatus.OK);
+    }
+
+    @GetMapping("/{gameId}/suitCount")
+    public ResponseEntity<Map<Card.Suit, Integer>> getGameDeck(@PathVariable String gameId) {
+        return new ResponseEntity<>(gameService.countsPerSuit(gameId), HttpStatus.OK);
+    }
 }

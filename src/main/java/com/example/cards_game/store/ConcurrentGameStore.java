@@ -7,7 +7,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.stereotype.Component;
 
-import com.example.cards_game.model.Card;
 import com.example.cards_game.model.Deck;
 import com.example.cards_game.model.Game;
 import com.example.cards_game.model.Player;
@@ -76,19 +75,6 @@ public class ConcurrentGameStore {
             if(game != null){
                 game.addDeck(deck);
             }
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public Card dealCard(String gameId){
-        lock.lock();
-        try {
-            Game game = games.get(gameId);
-            if(game != null){
-                return game.dealCard();
-            }
-            return null;
         } finally {
             lock.unlock();
         }
