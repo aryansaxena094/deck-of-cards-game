@@ -33,23 +33,35 @@ public class GameService {
     }
 
     public void deleteGame(String gameId) {
+        if (!gameExists(gameId)) {
+            throw new IllegalArgumentException("Game not found: " + gameId);
+        }
         gameStore.deleteGame(gameId);
         eventLogger.logEvent(gameId, "DELETE_GAME", "Game deleted with id: " + gameId);
     }
 
     public void addPlayerToGame(String gameId, Player player) {
+        if (!gameExists(gameId)) {
+            throw new IllegalArgumentException("Game not found: " + gameId);
+        }
         gameStore.addPlayerToGame(gameId, player);
         eventLogger.logEvent(gameId, "ADD_PLAYER",
                 "Player added to game with id: " + gameId + " player id: " + player.getId());
     }
 
     public void removePlayerFromGame(String gameId, String playerId) {
+        if (!gameExists(gameId) || !playerExists(gameId, playerId)) {
+            throw new IllegalArgumentException("Game or player not found: " + gameId + " / " + playerId);
+        }
         gameStore.removePlayerFromGame(gameId, playerId);
         eventLogger.logEvent(gameId, "REMOVE_PLAYER",
                 "Player removed from game with id: " + gameId + " player id: " + playerId);
     }
 
     public String addDeckToGame(String gameId) {
+        if (!gameExists(gameId)) {
+            throw new IllegalArgumentException("Game not found: " + gameId);
+        }
         Deck deck = new Deck();
         gameStore.addDeckToGame(gameId, deck);
         eventLogger.logEvent(gameId, "ADD_DECK", "Deck added to game with id: " + gameId);
@@ -60,17 +72,6 @@ public class GameService {
 
         return String.format("{\"GameId\": \"%s\", \"NumberOfDecks\": %d, \"TotalNumberOfCards\": %d}", gameId,
                 numberOfDecks, totalNumberOfCards);
-    }
-
-    public boolean gameExists(String gameId) {
-        eventLogger.logEvent(gameId, "GAME_EXISTS", "Checking if game with id: " + gameId + " exists");
-        return gameStore.getGame(gameId) != null;
-    }
-
-    public boolean playerExists(String gameId, String playerId) {
-        Game game = gameStore.getGame(gameId);
-        eventLogger.logEvent(gameId, "PLAYER_EXISTS", "Checking if player with id: " + playerId + " exists in game with id: " + gameId);
-        return game != null && game.getPlayer(playerId) != null;
     }
 
     public Game getGame(String gameId) {
@@ -147,22 +148,35 @@ public class GameService {
 
     public List<Card> getCardsOfPlayer(String gameId, String playerId) {
         if (!playerExists(gameId, playerId)) {
-            eventLogger.logEvent(gameId, "GET_CARDS", "Player with id: " + playerId + " does not exist in the game with id: " + gameId);
+            eventLogger.logEvent(gameId, "GET_CARDS",
+                    "Player with id: " + playerId + " does not exist in the game with id: " + gameId);
             return null;
         }
         Game game = gameStore.getGame(gameId);
         Player player = game.getPlayer(playerId);
-        eventLogger.logEvent(gameId, "GET_CARDS", "Cards retrieved for player with id: " + playerId + " in game with id: " + gameId);
+        eventLogger.logEvent(gameId, "GET_CARDS",
+                "Cards retrieved for player with id: " + playerId + " in game with id: " + gameId);
         return player.getHand();
     }
 
-    public Map<Card.Suit, Integer> countsPerSuit(String gameId){
+    public Map<Card.Suit, Integer> countsPerSuit(String gameId) {
         Game game = gameStore.getGame(gameId);
         List<Card> gameDeck = combineAndShuffleDecks(game);
         Map<Card.Suit, Integer> suitCount = gameDeck.stream().collect(
-            Collectors.groupingBy(Card::getSuit, Collectors.summingInt(suit -> 1)));
+                Collectors.groupingBy(Card::getSuit, Collectors.summingInt(suit -> 1)));
         eventLogger.logEvent(gameId, "SUIT_COUNT", "Suit count retrieved");
         return suitCount;
     }
 
+    public boolean gameExists(String gameId) {
+        eventLogger.logEvent(gameId, "GAME_EXISTS", "Checking if game with id: " + gameId + " exists");
+        return gameStore.getGame(gameId) != null;
+    }
+
+    public boolean playerExists(String gameId, String playerId) {
+        Game game = gameStore.getGame(gameId);
+        eventLogger.logEvent(gameId, "PLAYER_EXISTS",
+                "Checking if player with id: " + playerId + " exists in game with id: " + gameId);
+        return game != null && game.getPlayer(playerId) != null;
+    }
 }
