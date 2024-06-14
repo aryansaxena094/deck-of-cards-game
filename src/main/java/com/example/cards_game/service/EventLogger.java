@@ -10,7 +10,7 @@ import com.example.cards_game.model.Event;
 
 @Service
 public class EventLogger {
-    private List<Event> events = Collections.synchronizedList(new ArrayList<>());
+    private final List<Event> events = Collections.synchronizedList(new ArrayList<>());
     
     public void logEvent(String entityType, String eventType, String description) {
         Event event = new Event(entityType, eventType, description);
