@@ -15,19 +15,19 @@ public class Event {
         this.timestamp = LocalDateTime.now();
     }
 
-    private String getEntityId() {
+    public String getEntityId() {
         return entityId;
     }
 
-    private String getEventType() {
+    public String getEventType() {
         return eventType;
     }
 
-    private String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    private LocalDateTime getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
