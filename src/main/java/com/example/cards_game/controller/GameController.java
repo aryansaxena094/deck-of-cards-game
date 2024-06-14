@@ -2,6 +2,8 @@ package com.example.cards_game.controller;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,36 +25,43 @@ import com.example.cards_game.service.GameService;
 @RequestMapping("/game")
 public class GameController {
 
+    private static final Logger logger = LoggerFactory.getLogger(GameController.class);
+
     @Autowired
     private GameService gameService;
 
     @PostMapping
     public ResponseEntity<String> createGame() {
         String gameId = gameService.createGame();
+        logger.info("Game created with id: {}", gameId);
         return new ResponseEntity<>(gameId, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGame(@PathVariable String id){
         gameService.deleteGame(id);
+        logger.info("Game deleted with id: {}", id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/{gameId}/player")
     public ResponseEntity<Void> addPlayerToGame(@PathVariable String gameId, @RequestBody Player player){
         gameService.addPlayerToGame(gameId, player);
+        logger.info("Player added to game with id: {} player id: {}", gameId, player.getId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{gameId}/player/{playerId}")
     public ResponseEntity<Void> removePlayerFromGame(@PathVariable String gameId, @PathVariable String playerId){
         gameService.removePlayerFromGame(gameId, playerId);
+        logger.info("Player removed from game with id: {} player id: {}", gameId, playerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/{gameId}/decks")
     public ResponseEntity<Void> addDeckToGame(@PathVariable String gameId, @RequestBody Deck deck){
         gameService.addDeckToGame(gameId, deck);
+        logger.info("Deck added to game with id: {} deck id: {}", gameId, deck.getCards());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -60,8 +69,10 @@ public class GameController {
     public ResponseEntity<Void> dealCards(@PathVariable String gameId){
         Card card = gameService.dealCard(gameId);
         if(card != null){
+            logger.info("Card dealt from game with id: {}", gameId);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
+            logger.info("No cards left in game with id: {}", gameId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
@@ -69,6 +80,7 @@ public class GameController {
     @GetMapping
     public ResponseEntity<Map<String, Game>> getAllGames(){
         Map<String, Game> games = gameService.getAllGames();
+        logger.info("All games retrieved");
         return new ResponseEntity<>(games, HttpStatus.OK);
     }
 }
