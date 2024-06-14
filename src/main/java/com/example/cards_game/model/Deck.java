@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.Data;
+
+@Data
 public class Deck {
     private List<Card> cards;
 
@@ -20,10 +23,6 @@ public class Deck {
         }
         Collections.shuffle(cards);
     }
-
-    public List<Card> getCards() {
-        return cards;
-    }
     
     public Card dealCard() {
         if (cards.isEmpty()) {
@@ -36,6 +35,7 @@ public class Deck {
         return cards.size();
     }
 
+    @Override
     public String toString() {
         return "Deck{" + cards + '}';
     }

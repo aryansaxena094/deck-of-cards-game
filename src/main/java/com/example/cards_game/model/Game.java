@@ -5,19 +5,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
+import lombok.Data;
+
+@Data
 public class Game {
+    
+    @NotNull
     private String id;
+    
+    @NotNull
     private Map<String, Player> players;
+    
+    @NotNull
     private List<Deck> gameDeck;
     
     public Game(String id){
         this.id = id;
         this.players = new HashMap<>();
         this.gameDeck = new ArrayList<>();
-    }
-
-    public String getId() {
-        return id;
     }
 
     public List<Player> getPlayers(){

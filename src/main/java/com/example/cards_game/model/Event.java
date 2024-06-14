@@ -2,10 +2,23 @@ package com.example.cards_game.model;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotNull;
+
+import lombok.Data;
+
+@Data
 public class Event {
+
+    @NotNull
     private String entityId;
+
+    @NotNull
     private String eventType;
+
+    @NotNull
     private String description;
+
+    @NotNull
     private LocalDateTime timestamp;
 
     public Event(String entityId, String eventType, String description) {
@@ -15,22 +28,7 @@ public class Event {
         this.timestamp = LocalDateTime.now();
     }
 
-    public String getEntityId() {
-        return entityId;
-    }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
+    @Override
     public String toString() {
         return "Event{" +
                 "entityId='" + entityId + '\'' +
