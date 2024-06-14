@@ -17,7 +17,7 @@ public class ConcurrentGameStore {
     private final Map<String, Game> games = new HashMap<>();
     private final Lock lock = new ReentrantLock();
 
-    public void createGame(String gameId){
+    public void createGame(String gameId) {
         lock.lock();
         try {
             games.put(gameId, new Game(gameId));
@@ -26,7 +26,7 @@ public class ConcurrentGameStore {
         }
     }
 
-    public void deleteGame(String gameId){
+    public void deleteGame(String gameId) {
         lock.lock();
         try {
             games.remove(gameId);
@@ -34,8 +34,8 @@ public class ConcurrentGameStore {
             lock.unlock();
         }
     }
-    
-    public Game getGame(String gameId){
+
+    public Game getGame(String gameId) {
         lock.lock();
         try {
             return games.get(gameId);
@@ -44,11 +44,11 @@ public class ConcurrentGameStore {
         }
     }
 
-    public void addPlayerToGame(String gameId, Player player){
+    public void addPlayerToGame(String gameId, Player player) {
         lock.lock();
         try {
             Game game = games.get(gameId);
-            if(game != null){
+            if (game != null) {
                 game.addPlayer(player);
             }
         } finally {
@@ -56,11 +56,11 @@ public class ConcurrentGameStore {
         }
     }
 
-    public void removePlayerFromGame(String gameId, String playerId){
+    public void removePlayerFromGame(String gameId, String playerId) {
         lock.lock();
         try {
             Game game = games.get(gameId);
-            if(game != null){
+            if (game != null) {
                 game.removePlayer(playerId);
             }
         } finally {
@@ -68,11 +68,11 @@ public class ConcurrentGameStore {
         }
     }
 
-    public void addDeckToGame(String gameId, Deck deck){
+    public void addDeckToGame(String gameId, Deck deck) {
         lock.lock();
         try {
             Game game = games.get(gameId);
-            if(game != null){
+            if (game != null) {
                 game.addDeck(deck);
             }
         } finally {
@@ -80,7 +80,7 @@ public class ConcurrentGameStore {
         }
     }
 
-    public Map<String, Game> getGames(){
+    public Map<String, Game> getGames() {
         lock.lock();
         try {
             return new HashMap<>(games);
