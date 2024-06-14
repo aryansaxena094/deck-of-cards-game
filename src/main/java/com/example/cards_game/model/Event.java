@@ -8,7 +8,7 @@ public class Event {
     private String description;
     private LocalDateTime timestamp;
 
-    private Event(String entityId, String eventType, String description) {
+    public Event(String entityId, String eventType, String description) {
         this.entityId = entityId;
         this.eventType = eventType;
         this.description = description;
