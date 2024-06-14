@@ -5,11 +5,14 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.springframework.stereotype.Component;
+
 import com.example.cards_game.model.Card;
 import com.example.cards_game.model.Deck;
 import com.example.cards_game.model.Game;
 import com.example.cards_game.model.Player;
 
+@Component
 public class ConcurrentGameStore {
 
     private final Map<String, Game> games = new HashMap<>();
