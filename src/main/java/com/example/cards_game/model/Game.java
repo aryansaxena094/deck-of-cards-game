@@ -36,6 +36,10 @@ public class Game {
         gameDeck.add(deck);
     }
 
+    public List<Deck> getGameDeck(){
+        return new ArrayList<>(gameDeck);
+    }
+
     public Card dealCard(){
         for(Deck deck : gameDeck){
             Card card = deck.dealCard();

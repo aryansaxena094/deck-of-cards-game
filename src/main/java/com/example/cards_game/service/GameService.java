@@ -43,14 +43,30 @@ public class GameService {
         eventLogger.logEvent(gameId, "REMOVE_PLAYER", "Player removed from game with id: " + gameId + " player id: " + playerId);
     }
 
-    public void addDeckToGame(String gameId, Deck deck) {
+    public String addDeckToGame(String gameId) {
+        Deck deck = new Deck();
         gameStore.addDeckToGame(gameId, deck);
-        eventLogger.logEvent(gameId, "ADD_DECK", "Deck added to game with id: " + gameId + " deck id: " + deck.getCards());
+        eventLogger.logEvent(gameId, "ADD_DECK", "Deck added to game with id: " + gameId);
+
+        Game game = gameStore.getGame(gameId);
+        int numberOfDecks = game.getGameDeck().size();
+        int totalNumberOfCards = game.getGameDeck().stream().mapToInt(Deck::remainingCardsCount).sum();
+
+        return String.format("{\"GameId\": \"%s\", \"NumberOfDecks\": %d, \"TotalNumberOfCards\": %d}", gameId, numberOfDecks, totalNumberOfCards);
     }
 
-    public Card dealCard(String gameId){
-        eventLogger.logEvent(gameId, "DEAL_CARD", "Card dealt from game with id: " + gameId);
-        return gameStore.dealCard(gameId);
+    public Card dealCard(String gameId) {
+        Card card = gameStore.dealCard(gameId);
+        if (card != null) {
+            eventLogger.logEvent(gameId, "DEAL_CARD", "Card dealt in game with ID: " + gameId);
+        } else {
+            eventLogger.logEvent(gameId, "DEAL_CARD", "No cards left in game with ID: " + gameId);
+        }
+        return card;
+    }
+    
+    public Game getGame(String gameId) {
+        return gameStore.getGame(gameId);
     }
 
     public Map<String, Game> getAllGames(){
