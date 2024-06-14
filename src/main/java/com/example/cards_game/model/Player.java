@@ -7,6 +7,10 @@ public class Player {
     private String id;
     private List<Card> hand;
 
+    public Player() {
+        hand = new ArrayList<>();
+    }
+    
     public Player(String id) {
         this.id = id;
         hand = new ArrayList<>();
